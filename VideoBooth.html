@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="VideoBooth: Diffusion-based Video Generation with Image Prompts.">
+  <meta name="keywords" content="video generation, AIGC, text-based, diffusion model">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VideoBooth</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-D41DLSC2BJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-D41DLSC2BJ');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">VideoBooth: Diffusion-based Video Generation with Image Prompts
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://yumingj.github.io/" target="_blank">Yuming Jiang</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="https://tianxingwu.github.io/" target="_blank">Tianxing Wu</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="https://williamyang1991.github.io/" target="_blank">Shuai Yang</a><sup>1</sup>,</span>
+              </span>
+              <span class="author-block">
+                <a href="https://chenyangsi.top/" target="_blank">Chenyang Si</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="http://dahua.site/" target="_blank">Dahua Lin</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com.sg/citations?user=gFtI-8QAAAAJ&hl=en" target="_blank">Yu
+                  Qiao</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://www.mmlab-ntu.com/person/ccloy/" target="_blank">Chen Change Loy</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://liuziwei7.github.io/" target="_blank">Ziwei Liu</a><sup>1</sup>,
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>S-Lab, Nanyang Technological University</span>
+              <span class="author-block"><sup>2</sup>Shanghai AI Laboratory</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <a href="xxxx" class="external-link button is-normal is-rounded is-dark" target="_blank">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <!-- Code Link. -->
+                <span class="link-block">
+                  <a href="xxxx" class="external-link button is-normal is-rounded is-dark" target="_blank">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code (Coming Soon)</span>
+                  </a>
+                </span>
+                <!-- Video Link. -->
+                <span class="link-block">
+                  <a href="https://youtu.be/10DxH1JETzI" class="external-link button is-normal is-rounded is-dark"
+                    target="_blank">
+                    <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                    </span>
+                    <span>Video</span>
+                  </a>
+                </span>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="width:55%">
+    <video id="teaser" autoplay controls muted loop style="height:auto">
+      <source src="./VideoBooth/teaser_video.mp4" type="video/mp4">
+    </video>
+    <h2 class="subtitle has-text-centered">
+      <span class="dnerf">VideoBooth</span> generates videos with the subjects specified in the <span
+        style="color:#d68215; font-weight: bold; font-style: italic">image prompts</span>.
+    </h2>
+    <!-- </div> -->
+    </div>
+  </section>
+
+  <section class="card" style="width:55%; margin-top: 30px; margin-bottom: 30px;">
+    <h2 class="title is-4">Abstract</h2>
+    <p style="text-align: justify">
+      Text-driven video generation witnesses rapid progress. However, merely using text prompts is not enough to depict
+      the
+      desired subject appearance that accurately aligns with users' intents, especially for customized content creation.
+      In
+      this paper, we study the task of video generation with image prompts, which provide more accurate and direct
+      content
+      control beyond the text prompts. Specifically, we propose a feed-forward framework <b>VideoBooth</b>, with two
+      dedicated designs:
+      <b>1)</b> We propose to embed image prompts in a coarse-to-fine manner.
+      Coarse visual embeddings from image encoder provide high-level encodings of image prompts, while fine visual
+      embeddings
+      from the proposed attention injection module provide multi-scale and detailed encoding of image prompts.
+      These two complementary embeddings can faithfully capture the desired appearance.
+      <b>2)</b> In the attention injection module at fine level, multi-scale image prompts are fed into different
+      cross-frame attention
+      layers as additional keys and values.
+      This extra spatial information refines the details in the first frame and then it is propagated to the remaining
+      frames,
+      which maintains temporal consistency.
+      Extensive experiments demonstrate that VideoBooth achieves state-of-the-art performance in generating customized
+      high-quality videos with subjects specified in image prompts. Notably, VideoBooth is a generalizable framework
+      where a
+      single model works for a wide range of image prompts within a single feed-forward pass.
+    </p>
+  </section>
+
+  <section class="card" style="width:55%; margin-top: 30px; margin-bottom: 30px;">
+    <h2 class="title is-4">Method</h2>
+    <video id="method" autoplay controls muted loop style="height:auto">
+      <source src="./VideoBooth/method.mp4" type="video/mp4">
+    </video>
+    <!-- <p> <a style="cursor:pointer;" data-fancybox data-src="./Text2Performer/framework.png width:80%"> <img
+          src="./VideoBooth/framework.png"> </a> </p> -->
+    <!-- <p style="text-align: center">We propose to inject image prompts in a coarse-to-fine manner: 1) The coarse visual
+      embedding is inserted into the text embeddings. 2) Fine visual embeddings serve as additional keys and values to
+      refine the synthetic details.</p> -->
+  </section>
+
+  <div class="slideshow-container" style="width:55%; margin-top: 30px;">
+    <div class="mySlides0 fade">
+      <div class="card">
+        <h2 class="title is-4">Results: Same Image Prompts with Different Texts</h2>
+        <p> <a style="cursor:pointer;" data-fancybox data-src="./VideoBooth/results_1.mp4">
+            <video id="teaser" autoplay controls muted loop style="height:auto">
+              <source src="./VideoBooth/results_1.mp4" type="video/mp4">
+            </video> </a> </p>
+      </div>
+    </div>
+
+    <div class="mySlides0 fade">
+      <div class="card">
+        <h2 class="title is-4">Results: Same Image Prompts with Different Texts</h2>
+        <p> <a style="cursor:pointer;" data-fancybox data-src="./VideoBooth/results_2.mp4">
+            <video id="teaser" autoplay controls muted loop style="height:auto">
+              <source src="./VideoBooth/results_2.mp4" type="video/mp4">
+            </video> </a> </p>
+      </div>
+    </div>
+
+    <div class="mySlides0 fade">
+      <div class="card">
+        <h2 class="title is-4">Results: Same Image Prompts with Different Texts</h2>
+        <p> <a style="cursor:pointer;" data-fancybox data-src="./VideoBooth/results_3.mp4">
+            <video id="teaser" autoplay controls muted loop style="height:auto">
+              <source src="./VideoBooth/results_3.mp4" type="video/mp4">
+            </video> </a> </p>
+      </div>
+    </div>
+
+    <div class="mySlides0 fade">
+      <div class="card">
+        <h2 class="title is-4">Results: Same Image Prompts with Different Texts</h2>
+        <p> <a style="cursor:pointer;" data-fancybox data-src="./VideoBooth/results_4.mp4">
+            <video id="teaser" autoplay controls muted loop style="height:auto">
+              <source src="./VideoBooth/results_4.mp4" type="video/mp4">
+            </video> </a> </p>
+      </div>
+    </div>
+
+    <div class="mySlides0 fade">
+      <div class="card">
+        <h2 class="title is-4">Results: Same Image Prompts with Different Texts</h2>
+        <p> <a style="cursor:pointer;" data-fancybox data-src="./VideoBooth/results_5.mp4">
+            <video id="teaser" autoplay controls muted loop style="height:auto">
+              <source src="./VideoBooth/results_5.mp4" type="video/mp4">
+            </video> </a> </p>
+      </div>
+    </div>
+
+    <!-- Next and previous buttons -->
+    <a class="prev" onclick="plusSlides(0, -1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(0, 1)">&#10095;</a>
+  </div>
+  <br>
+
+  <!-- The dots/circles -->
+  <div style="text-align:center">
+    <span class="dot0" onclick="currentSlide(0, 1)"></span>
+    <span class="dot0" onclick="currentSlide(0, 2)"></span>
+    <span class="dot0" onclick="currentSlide(0, 3)"></span>
+    <span class="dot0" onclick="currentSlide(0, 4)"></span>
+    <span class="dot0" onclick="currentSlide(0, 5)"></span>
+  </div>
+
+  <div class="slideshow-container" style="width:55%; margin-top: 50px;">
+    <div class="mySlides1 fade">
+      <div class="card">
+        <h2 class="title is-4">Results: Same Texts with Different Image Prompts</h2>
+        <p> <a style="cursor:pointer;" data-fancybox data-src="./VideoBooth/different_img_results1.mp4">
+            <video id="teaser" autoplay controls muted loop style="height:auto">
+              <source src="./VideoBooth/different_img_results1.mp4" type="video/mp4">
+            </video> </a> </p>
+      </div>
+    </div>
+
+    <div class="mySlides1 fade">
+      <div class="card">
+        <h2 class="title is-4">Results: Same Texts with Different Image Prompts</h2>
+        <p> <a style="cursor:pointer;" data-fancybox data-src="./VideoBooth/different_img_results2.mp4">
+            <video id="teaser" autoplay controls muted loop style="height:auto">
+              <source src="./VideoBooth/different_img_results2.mp4" type="video/mp4">
+            </video> </a> </p>
+      </div>
+    </div>
+
+
+    <!-- Next and previous buttons -->
+    <a class="prev" onclick="plusSlides(1, -1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1, 1)">&#10095;</a>
+  </div>
+  <br>
+
+  <!-- The dots/circles -->
+  <div style="text-align:center">
+    <span class="dot1" onclick="currentSlide(1, 1)"></span>
+    <span class="dot1" onclick="currentSlide(1, 2)"></span>
+  </div>
+
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{jiang2023videobooth,
+  author = {Jiang, Yuming and Wu, Tianxing and Yang, Shuai and Si, Chenyang and Lin, Dahua and Qiao, Yu and Loy, Chen Change and Liu, Ziwei},
+  title = {VideoBooth: Diffusion-based Video Generation with Image Prompts},
+  year = {2023}
+}</code></pre>
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <a class="icon-link" href="https://github.com/yumingj" class="external-link">
+          <i class="fas fa-file-pdf"></i>
+        </a>
+        <a class="icon-link" href="https://github.com/yumingj" class="external-link" disabled>
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website is licensed under a <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+            <p>
+              Website source code based on the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>
+              project page and <a href="https://luckyhzt.github.io/unicolor">UniColor</a> project page.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Javascript Functions -->
+  <script type="text/javascript">
+
+    let slideIndex = [1, 1, 1];
+    showSlides(0, slideIndex[0]);
+    showSlides(1, slideIndex[1])
+    showSlides(2, slideIndex[2])
+
+    // Next/previous controls
+    function plusSlides(id, n) {
+      showSlides(id, slideIndex[id] += n);
+    }
+
+    // Thumbnail image controls
+    function currentSlide(id, n) {
+      showSlides(id, slideIndex[id] = n);
+    }
+
+    function showSlides(id, n) {
+      let i;
+      let slides = document.getElementsByClassName("mySlides" + id);
+      let dots = document.getElementsByClassName("dot" + id);
+      if (n > slides.length) { slideIndex[id] = 1 }
+      if (n < 1) { slideIndex[id] = slides.length }
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+      }
+      slides[slideIndex[id] - 1].style.display = "block";
+      dots[slideIndex[id] - 1].className += " active";
+    }
+  </script>
+
+</body>
+
+</html>
